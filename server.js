@@ -8,8 +8,29 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
+// CORS configuration
+const getAllowedOrigins = () => {
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'https://sms-frontend-weld.vercel.app'
+  ];
+  
+  if (process.env.ALLOWED_ORIGINS) {
+    return process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim());
+  }
+  
+  return defaultOrigins;
+};
+
+const corsOptions = {
+  origin: getAllowedOrigins(),
+  credentials: true, // Allow credentials if you're using authentication
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
